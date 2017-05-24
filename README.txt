@@ -44,4 +44,3 @@ working by visiting the test form located at admin/config/stripe/test.
 Developer instructions
 ----------------------
 Instructions for developers can be found at https://drupal.org/node/2173795
-
