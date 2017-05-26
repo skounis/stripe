@@ -1,0 +1,8 @@
+environment: 'test'
+apikey:
+  test:
+    public: ''
+    secret: ''
+  live:
+    public: ''
+    secret: ''

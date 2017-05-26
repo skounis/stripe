@@ -1,0 +1,13 @@
+stripe:
+  remote: https://stripe.com/docs/stripe.js?
+  license:
+    name: Propietary
+  js:
+    https://js.stripe.com/v3/: { type: external, minified: true }
+
+stripe.js:
+  js:
+    js/stripe.js: {}
+  dependencies:
+    - stripe/stripe
+    - core/drupalSettings
