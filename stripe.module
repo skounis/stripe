@@ -47,7 +47,7 @@ function stripe_theme() {
 function stripe_page_attachments(array &$page) {
   $config = \Drupal::config('stripe.settings');
   $page['#attached']['library'][] = 'stripe/stripe.js';
-  $page['#attached']['drupalSettings']['stripe']['apiKey'] = $config->get('apikey_' . $config->get('environment'));
+  $page['#attached']['drupalSettings']['stripe']['apiKey'] = $config->get('apikey.' . $config->get('environment') . '.public');
 }
 
 function template_preprocess_stripe_element(&$variables) {
