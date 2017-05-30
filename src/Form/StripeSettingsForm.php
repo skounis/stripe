@@ -64,7 +64,7 @@ class StripeSettingsForm extends ConfigFormBase {
     $form['apikey_live'] = [
       '#type' => 'fieldset',
       '#title' => $this->t('Live'),
-      '#description' => $this->t('<a href=":uri">Stripe dashboard</a>', [':uri' => 'https://dashboard.stripe.com/account/apikeys']),
+      '#description' => $this->t('<a href=":uri">Stripe dashboard</a><p><strong>Important:</strong> Bear in mind that this configuration will be exported in plain text and likely kept under version control.</p><p>We recommend providing these settings through your settings.php file, directly on the environment and safe from prying eyes.</p>', [':uri' => 'https://dashboard.stripe.com/account/apikeys']),
     ];
 
     $form['apikey_live']['apikey_public_live'] = [
