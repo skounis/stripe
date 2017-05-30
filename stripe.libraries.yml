@@ -6,6 +6,9 @@ stripe:
     https://js.stripe.com/v3/: { type: external, minified: true }
 
 stripe.js:
+  css:
+    state:
+      css/stripe.css: {}
   js:
     js/stripe.js: {}
   dependencies:

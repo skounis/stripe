@@ -45,7 +45,6 @@ class Stripe extends Hidden {
       'address_state' => '',
       'address_zip' => '',
       'address_country' => '',
-      'currency' => '',
     ];
     return $info;
   }
@@ -63,6 +62,9 @@ class Stripe extends Hidden {
 
 
   public static function processStripe(&$element, FormStateInterface $form_state, &$complete_form) {
+    $config = \Drupal::config('stripe.settings');
+    $element['#attached']['library'][] = 'stripe/stripe.js';
+    $element['#attached']['drupalSettings']['stripe']['apiKey'] = $config->get('apikey.' . $config->get('environment') . '.public');
     $settings = [];
     $element['#attached']['drupalSettings']['stripe']['elements'][$element['#id']] = $settings;
     return $element;
