@@ -10,7 +10,7 @@ use Drupal\Core\Form\FormStateInterface;
  *
  * @package Drupal\stripe_examples\Form
  */
-class SimpleCheckout extends FormBase {
+class SimpleCheckoutForm extends FormBase {
 
 
   /**

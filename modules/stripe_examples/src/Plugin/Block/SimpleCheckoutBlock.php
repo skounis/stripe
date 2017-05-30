@@ -8,17 +8,17 @@ use Drupal\Core\Block\BlockBase;
  * Provides a 'Simple checkout' Block.
  *
  * @Block(
- *   id = "stripe_simple_checkout",
+ *   id = "stripe_example_checkout",
  *   admin_label = @Translation("Stripe simple checkout"),
  * )
  */
-class SimpleCheckout extends BlockBase {
+class SimpleCheckoutBlock extends BlockBase {
 
   /**
    * {@inheritdoc}
    */
   public function build() {
-     $form = \Drupal::formBuilder()->getForm('\Drupal\stripe_examples\Form\SimpleCheckout');
+     $form = \Drupal::formBuilder()->getForm('\Drupal\stripe_examples\Form\SimpleCheckoutForm');
      return $form;
   }
 

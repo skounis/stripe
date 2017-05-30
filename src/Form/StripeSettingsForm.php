@@ -10,7 +10,7 @@ use Drupal\Core\Form\FormStateInterface;
  *
  * @package Drupal\stripe\Form
  */
-class StripeSettings extends ConfigFormBase {
+class StripeSettingsForm extends ConfigFormBase {
 
   /**
    * {@inheritdoc}
