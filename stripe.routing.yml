@@ -1,7 +1,7 @@
 stripe.settings:
   path: '/admin/config/stripe'
   defaults:
-    _form: '\Drupal\stripe\Form\StripeSettings'
+    _form: '\Drupal\stripe\Form\StripeSettingsForm'
     _title: 'Stripe settings'
   requirements:
     _permission: 'access administration pages'
