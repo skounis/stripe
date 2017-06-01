@@ -3,8 +3,10 @@
 namespace Drupal\stripe\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\stripe\StripeEvents;
-use Drupal\stripe\StripeWebhookEvent;
+use Drupal\stripe\Event\StripeEvents;
+use Drupal\stripe\Event\StripeWebhookEvent;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -13,6 +15,30 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class StripeWebhookController extends ControllerBase {
 
+  /**
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  protected $event_dispatcher;
+
+  /**
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
+   */
+  public function __construct(EventDispatcherInterface $event_dispatcher) {
+    $this->event_dispatcher = $event_dispatcher;
+  }
+
+  /**
+   * When this controller is created, it will get the di_example.talk service
+   * and store it.
+   *
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+   * @return static
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('event_dispatcher')
+    );
+  }
   /**
    * Handle webhook
    */
@@ -55,7 +81,7 @@ class StripeWebhookController extends ControllerBase {
     }
 
     // Dispatch the webhook event.
-    \Drupal::service('event_dispatcher')
+    $this->event_dispatcher
       ->dispatch(StripeEvents::WEBHOOK, new StripeWebhookEvent($event));
 
     return new Response('OK', Response::HTTP_OK);

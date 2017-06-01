@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\stripe;
+namespace Drupal\stripe\Event;
 
 /**
  * Defines events for stripe webhooks
