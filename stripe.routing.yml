@@ -4,6 +4,16 @@ stripe.settings:
     _form: '\Drupal\stripe\Form\StripeSettingsForm'
     _title: 'Stripe settings'
   requirements:
-    _permission: 'access administration pages'
+    _permission: 'administer stripe'
   options:
     _admin_route: TRUE
+
+stripe_api.webhook:
+  path: '/stripe/webhook'
+  methods: [POST]
+  defaults:
+    _controller: '\Drupal\stripe\Controller\StripeWebhookController::handle'
+  requirements:
+    _permission: 'access content'
+  options:
+    no_cache: true

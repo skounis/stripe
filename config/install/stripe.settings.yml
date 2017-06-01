@@ -3,6 +3,8 @@ apikey:
   test:
     public: ''
     secret: ''
+    webhook: ''
   live:
     public: ''
     secret: ''
+    webhook: ''

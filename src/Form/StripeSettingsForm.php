@@ -57,14 +57,20 @@ class StripeSettingsForm extends ConfigFormBase {
     $form['apikey_test']['apikey_secret_test'] = [
       '#type' => 'password',
       '#title' => $this->t('Secret'),
-      '#default_value' => $config->get('apikey')['test']['secret'],
       '#placeholder' => $config->get('apikey')['test']['secret'] ? str_repeat('●', 32) : '',
+    ];
+
+    $form['apikey_test']['apikey_webhook_test'] = [
+      '#type' => 'password',
+      '#title' => $this->t('Webhook secret'),
+      '#placeholder' => $config->get('apikey')['test']['webhook'] ? str_repeat('●', 32) : '',
+      '#description' => $this->t('Use the <a href=":uri">webhook signature</a> to validate it, otherwise it will be validated by checking back with stripe.', [':uri' => 'https://stripe.com/docs/webhooks#signatures']),
     ];
 
     $form['apikey_live'] = [
       '#type' => 'fieldset',
       '#title' => $this->t('Live'),
-      '#description' => $this->t('<a href=":uri">Stripe dashboard</a><p><strong>Important:</strong> Bear in mind that this configuration will be exported in plain text and likely kept under version control.</p><p>We recommend providing these settings through your settings.php file, directly on the environment and safe from prying eyes.</p>', [':uri' => 'https://dashboard.stripe.com/account/apikeys']),
+      '#description' => $this->t('<p><strong>Important:</strong> Bear in mind that this configuration will be exported in plain text and likely kept under version control. We recommend providing these settings through your settings.php file, directly on the environment and safe from prying eyes.</p>') . $this->t('<a href=":uri">Stripe dashboard</a>', [':uri' => 'https://dashboard.stripe.com/account/apikeys']),
     ];
 
     $form['apikey_live']['apikey_public_live'] = [
@@ -76,8 +82,14 @@ class StripeSettingsForm extends ConfigFormBase {
     $form['apikey_live']['apikey_secret_live'] = [
       '#type' => 'password',
       '#title' => $this->t('Secret'),
-      '#default_value' => $config->get('apikey')['live']['secret'],
       '#placeholder' => $config->get('apikey')['live']['secret'] ? str_repeat('●', 32) : '',
+    ];
+
+    $form['apikey_live']['apikey_webhook_live'] = [
+      '#type' => 'password',
+      '#title' => $this->t('Webhook secret'),
+      '#placeholder' => $config->get('apikey')['live']['webhook'] ? str_repeat('●', 32) : '',
+      '#description' => $this->t('Use the <a href=":uri">webhook signature</a> to validate it, otherwise it will be validated by checking back with stripe.', [':uri' => 'https://stripe.com/docs/webhooks#signatures']),
     ];
 
     return parent::buildForm($form, $form_state);
@@ -106,6 +118,16 @@ class StripeSettingsForm extends ConfigFormBase {
     $secret = $form_state->getValue('apikey_secret_live');
     if ($secret) {
       $config->set('apikey.live.secret', $secret);
+    }
+
+    $secret = $form_state->getValue('apikey_webhook_test');
+    if ($secret) {
+      $config->set('apikey.test.webhook', $secret);
+    }
+
+    $secret = $form_state->getValue('apikey_webhook_live');
+    if ($secret) {
+      $config->set('apikey.live.webhook', $secret);
     }
 
     $this->config('stripe.settings')
