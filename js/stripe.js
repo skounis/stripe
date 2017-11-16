@@ -46,9 +46,9 @@
             // Create an instance of Elements
             var elements = stripe.elements();
 
-            var options = [];
+            var options = {};
             if (stripeSelectors && stripeSelectors['address_zip']) {
-              options['hidePostalCode'] = true;
+              options.hidePostalCode = true;
             }
 
             // Allow other modules to change these options
