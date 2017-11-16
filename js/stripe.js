@@ -73,7 +73,7 @@
             form.addEventListener('submit', function(event) {
               event.preventDefault();
 
-              var options = [];
+              var options = {};
 
               for (var data in stripeSelectors) {
                 var selector = stripeSelectors[data];
