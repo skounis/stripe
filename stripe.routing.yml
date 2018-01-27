@@ -14,6 +14,6 @@ stripe_api.webhook:
   defaults:
     _controller: '\Drupal\stripe\Controller\StripeWebhookController::handle'
   requirements:
-    _permission: 'access content'
+    _permission: 'access stripe webhook'
   options:
     no_cache: true
