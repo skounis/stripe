@@ -1,5 +1,2 @@
 administer stripe:
   title: 'Administer stripe module'
-
-access stripe webhook:
-  title: 'Access stripe webhook'
