@@ -34,6 +34,8 @@ class StripeSettingsForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('stripe.settings');
 
+    $live_test_description = $this->t('<p><strong>Important:</strong> Bear in mind that this configuration will be exported in plain text and likely kept under version control. We recommend providing these settings through your settings.php file, directly on the environment and safe from prying eyes.</p>') . $this->t('<a href=":uri">Stripe dashboard</a>', [':uri' => 'https://dashboard.stripe.com/account/apikeys']);
+
     $form['environment'] = [
       '#type' => 'radios',
       '#options' => ['test' => $this->t('Test'), 'live' => $this->t('Live')],
@@ -45,7 +47,7 @@ class StripeSettingsForm extends ConfigFormBase {
     $form['apikey_test'] = [
       '#type' => 'fieldset',
       '#title' => $this->t('Test'),
-      '#description' => $this->t('<a href=":uri">Stripe dashboard</a>', [':uri' => 'https://dashboard.stripe.com/account/apikeys']),
+      '#description' => $live_test_description,
     ];
 
     $form['apikey_test']['apikey_public_test'] = [
@@ -70,7 +72,7 @@ class StripeSettingsForm extends ConfigFormBase {
     $form['apikey_live'] = [
       '#type' => 'fieldset',
       '#title' => $this->t('Live'),
-      '#description' => $this->t('<p><strong>Important:</strong> Bear in mind that this configuration will be exported in plain text and likely kept under version control. We recommend providing these settings through your settings.php file, directly on the environment and safe from prying eyes.</p>') . $this->t('<a href=":uri">Stripe dashboard</a>', [':uri' => 'https://dashboard.stripe.com/account/apikeys']),
+      '#description' => $live_test_description,
     ];
 
     $form['apikey_live']['apikey_public_live'] = [
