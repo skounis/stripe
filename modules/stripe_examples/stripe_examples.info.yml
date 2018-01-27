@@ -4,5 +4,4 @@ description: Stripe examples
 core: 8.x
 package: Stripe
 dependencies:
-  module:
-    - stripe
+  - stripe
