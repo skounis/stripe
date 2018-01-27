@@ -7,8 +7,11 @@
 
   'use strict';
 
+  var stripe = null;
   // Create a Stripe client
-  var stripe = Stripe(drupalSettings.stripe.apiKey);
+  if (drupalSettings.stripe.apiKey) {
+    stripe = Stripe(drupalSettings.stripe.apiKey);
+  }
 
   /**
    * Attaches the stripe behavior
@@ -20,11 +23,10 @@
   Drupal.behaviors.stripe = {
     attach: function (context, settings) {
 
-      // Create a Stripe client
-      // var stripe = Stripe(settings.stripe.apiKey);
-
-      // Create an instance of Elements
-      // var elements = stripe.elements();
+      // Stripe was not initialized, do nothing.
+      if (!stripe) {
+        return;
+      }
 
       for (var base in settings.stripe.elements) {
         var element = $('#' + base, context)[0];

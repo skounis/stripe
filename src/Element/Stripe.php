@@ -68,7 +68,12 @@ class Stripe extends Hidden {
   public static function processStripe(&$element, FormStateInterface $form_state, &$complete_form) {
     $config = \Drupal::config('stripe.settings');
     $element['#attached']['library'][] = 'stripe/stripe.js';
-    $element['#attached']['drupalSettings']['stripe']['apiKey'] = $config->get('apikey.' . $config->get('environment') . '.public');
+    $apikey = $config->get('apikey.' . $config->get('environment') . '.public');
+    $element['#attached']['drupalSettings']['stripe']['apiKey'] = $apikey;
+    if (empty($apikey)) {
+      $settings_uri = \Drupal\Core\Url::fromRoute('stripe.settings')->toString();
+      drupal_set_message(t('You must <a href="@settings_uri">configure</a> the <b>Publishable API Key</b> on <b>%environment</b> for the stripe elements to work.', ['%environment' => $config->get('environment'), '@settings_uri' => $settings_uri]), 'error');
+    }
     $settings = [];
     $element['#attached']['drupalSettings']['stripe']['elements'][$element['#id']] = $settings;
     return $element;
