@@ -4,8 +4,8 @@ namespace Drupal\stripe\Controller;
 
 use Stripe\Error\SignatureVerification;
 use Stripe\Event;
-use Stripe\Webhook;
 use Stripe\Stripe;
+use Stripe\Webhook;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\stripe\Event\StripeEvents;
 use Drupal\stripe\Event\StripeWebhookEvent;

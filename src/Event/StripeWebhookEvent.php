@@ -2,7 +2,7 @@
 
 namespace Drupal\stripe\Event;
 
-use Stripe\Event;
+use Stripe\Event as StripeEvent;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
@@ -23,7 +23,7 @@ class StripeWebhookEvent extends Event {
    * @param \Stripe\Event $event
    *   Stripe API event object object.
    */
-  public function __construct(Event $event) {
+  public function __construct(StripeEvent $event) {
     $this->event = $event;
   }
 
