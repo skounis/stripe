@@ -3,9 +3,12 @@ Stripe (https://stripe.com/) Payment Gateway integration with Drupal.
 Description
 -----------
 
-This is a development module that provides the bare elememnts and requirements needed to integrate stripe with Drupal 8. It has the necessary libraries dependencies and assets to include.
+This is a development module that provides the bare elememnts and requirements
+needed to integrate stripe with Drupal 8. It has the necessary libraries
+dependencies and assets to include.
 
-Look inside for the stripe_examples module for a simple implementation of the features exposed by this module.
+Look inside for the stripe_examples module for a simple implementation of the
+features exposed by this module.
 
 Requirements
 ------------

@@ -4,12 +4,11 @@ namespace Drupal\stripe\Element;
 
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Render\Element\FormElement;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Render\Element\Hidden;
 
 /**
- * Provides a form element that will be rendered by stripe elements
+ * Provides a form element that will be rendered by stripe elements.
  *
  * @see https://stripe.com/docs/elements
  *
@@ -20,6 +19,7 @@ use Drupal\Core\Render\Element\Hidden;
  * @FormElement("stripe")
  */
 class Stripe extends Hidden {
+
   /**
    * {@inheritdoc}
    */
@@ -31,10 +31,10 @@ class Stripe extends Hidden {
     $info['#pre_render'][] = [$class, 'preRenderStripe'];
     $info['#theme_wrappers'] = [
       'stripe_element' => [],
-      'form_element' => []
+      'form_element' => [],
     ];
 
-    // The selectors are gonna be looked within the enclosing form only
+    // The selectors are gonna be looked within the enclosing form only.
     $info['#stripe_selectors'] = [
       'name' => '',
       'first_name' => '',
@@ -49,7 +49,9 @@ class Stripe extends Hidden {
     return $info;
   }
 
-
+  /**
+   * Prepares a 'stripe' #type element for rendering.
+   */
   public static function preRenderStripe($element) {
     Element::setAttributes($element, ['id']);
     $selectors = array_filter($element['#stripe_selectors']);
@@ -60,7 +62,9 @@ class Stripe extends Hidden {
     return $element;
   }
 
-
+  /**
+   * Processes a stripe element.
+   */
   public static function processStripe(&$element, FormStateInterface $form_state, &$complete_form) {
     $config = \Drupal::config('stripe.settings');
     $element['#attached']['library'][] = 'stripe/stripe.js';

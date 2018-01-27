@@ -12,7 +12,6 @@ use Drupal\Core\Form\FormStateInterface;
  */
 class SimpleCheckoutForm extends FormBase {
 
-
   /**
    * {@inheritdoc}
    */
@@ -35,11 +34,11 @@ class SimpleCheckoutForm extends FormBase {
     $form['stripe'] = [
       '#type' => 'stripe',
       '#title' => $this->t('Credit card'),
-      // The selectors are gonna be looked within the enclosing form only
+      // The selectors are gonna be looked within the enclosing form only.
       "#stripe_selectors" => [
         'first_name' => ':input[name="first"]',
         'last_name' => ':input[name="last"]',
-      ]
+      ],
     ];
     $form['submit'] = [
       '#type' => 'submit',
@@ -47,13 +46,6 @@ class SimpleCheckoutForm extends FormBase {
     ];
 
     return $form;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    parent::validateForm($form, $form_state);
   }
 
   /**

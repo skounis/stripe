@@ -45,10 +45,12 @@ function stripe_theme() {
  * @see https://stripe.com/docs/stripe.js
  */
 function stripe_page_attachments(array &$page) {
-  $config = \Drupal::config('stripe.settings');
   $page['#attached']['library'][] = 'stripe/stripe';
 }
 
+/**
+ * Implements template_preprocess().
+ */
 function template_preprocess_stripe_element(&$variables) {
   $element = &$variables['element'];
   $variables['children'] = $element;

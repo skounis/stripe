@@ -18,8 +18,8 @@ class SimpleCheckoutBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function build() {
-     $form = \Drupal::formBuilder()->getForm('\Drupal\stripe_examples\Form\SimpleCheckoutForm');
-     return $form;
+    $form = \Drupal::formBuilder()->getForm('\Drupal\stripe_examples\Form\SimpleCheckoutForm');
+    return $form;
   }
 
 }

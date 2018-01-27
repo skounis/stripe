@@ -2,6 +2,10 @@
 
 namespace Drupal\stripe\Controller;
 
+use Stripe\Error\SignatureVerification;
+use Stripe\Event;
+use Stripe\Webhook;
+use Stripe\Stripe;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\stripe\Event\StripeEvents;
 use Drupal\stripe\Event\StripeWebhookEvent;
@@ -16,22 +20,29 @@ use Symfony\Component\HttpFoundation\Response;
 class StripeWebhookController extends ControllerBase {
 
   /**
+   * The event dispatcher service.
+   *
    * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
    */
-  protected $event_dispatcher;
+  protected $eventDispatcher;
 
   /**
+   * Creates a new instance.
+   *
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
+   *   The event dispatcher.
    */
   public function __construct(EventDispatcherInterface $event_dispatcher) {
-    $this->event_dispatcher = $event_dispatcher;
+    $this->eventDispatcher = $event_dispatcher;
   }
 
   /**
-   * When this controller is created, it will get the di_example.talk service
-   * and store it.
+   * When this controller is created,
+   * it will get the di_example.talk service and store it.
    *
    * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+   *   The container.
+   *
    * @return static
    */
   public static function create(ContainerInterface $container) {
@@ -39,13 +50,14 @@ class StripeWebhookController extends ControllerBase {
       $container->get('event_dispatcher')
     );
   }
+
   /**
-   * Handle webhook
+   * Handle webhook.
    */
-  function handle(Request $request) {
+  public function handle(Request $request) {
     $config = \Drupal::config('stripe.settings');
 
-    \Stripe\Stripe::setApiKey($config->get('apikey.' . $config->get('environment') . '.secret'));
+    Stripe::setApiKey($config->get('apikey.' . $config->get('environment') . '.secret'));
 
     $environment = $config->get('environment');
     $payload = @file_get_contents("php://input");
@@ -54,36 +66,36 @@ class StripeWebhookController extends ControllerBase {
 
     try {
       if (!empty($secret)) {
-        $event = \Stripe\Webhook::constructEvent($payload, $signature, $secret);
+        $event = Webhook::constructEvent($payload, $signature, $secret);
       }
       else {
-        $data = json_decode($payload, true);
+        $data = json_decode($payload, TRUE);
         $jsonError = json_last_error();
-        if ($data === null && $jsonError !== JSON_ERROR_NONE) {
-            $msg = "Invalid payload: $payload "
-              . "(json_last_error() was $jsonError)";
-            throw new \UnexpectedValueException($msg);
+        if ($data === NULL && $jsonError !== JSON_ERROR_NONE) {
+          $msg = "Invalid payload: $payload (json_last_error() was $jsonError)";
+          throw new \UnexpectedValueException($msg);
         }
 
         if ($environment == 'live') {
-          $event = \Stripe\Event::retrieve($data['id']);
+          $event = Event::retrieve($data['id']);
         }
         else {
-          $event = \Stripe\Event::constructFrom($data, null);
+          $event = Event::constructFrom($data, NULL);
         }
       }
     }
-    catch(\UnexpectedValueException $e) {
+    catch (\UnexpectedValueException $e) {
       return new Response('Invalid payload', Response::HTTP_BAD_REQUEST);
     }
-    catch(\Stripe\Error\SignatureVerification $e) {
+    catch (SignatureVerification $e) {
       return new Response('Invalid signature', Response::HTTP_BAD_REQUEST);
     }
 
     // Dispatch the webhook event.
-    $this->event_dispatcher
+    $this->eventDispatcher
       ->dispatch(StripeEvents::WEBHOOK, new StripeWebhookEvent($event));
 
     return new Response('OK', Response::HTTP_OK);
   }
+
 }

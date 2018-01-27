@@ -1,4 +1,5 @@
-.sripe-card-errors, .StripeElement--invalid {
+.sripe-card-errors,
+.StripeElement--invalid {
   color: red;
 }
 
