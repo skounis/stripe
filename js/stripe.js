@@ -75,29 +75,47 @@
             form.addEventListener('submit', function(event) {
               event.preventDefault();
 
-              var options = {};
-
+              // Collect all stripe options from the provided selectors
+              var stripeOptions = {name: ''};
               for (var data in stripeSelectors) {
                 var selector = stripeSelectors[data];
                 if (selector) {
-                  options[data] = $(selector, form).val();
+                  stripeOptions[data] = $(selector, form).val();
                 }
               }
 
               // Name special handling
-              options['name'] = '';
-              if (options['first_name'] ) {
-                options['name'] += options['first_name'];
-                if (options['last_name']) {
-                  options['name'] += ' ';
+              if (stripeOptions['first_name'] ) {
+                stripeOptions['name'] += stripeOptions['first_name'];
+                if (stripeOptions['last_name']) {
+                  stripeOptions['name'] += ' ';
                 }
               }
-              if (options['last_name']) {
-                options['name'] += options['last_name'];
+              if (stripeOptions['last_name']) {
+                stripeOptions['name'] += stripeOptions['last_name'];
               }
 
               // Allow other modules to change these options
-              $(element).trigger('drupalStripeCreateToken', [card, options]);
+              $(element).trigger('drupalStripeCreateToken', [card, stripeOptions]);
+
+              // Filter out unknown options and special handling for some of them
+              // https://stripe.com/docs/stripe-js/reference#stripe-create-token
+              var validOptions = [
+                'name',
+                'address_line1',
+                'address_line2',
+                'address_city',
+                'address_state',
+                'address_zip',
+                'address_country',
+                'currency'
+              ];
+              var options = {};
+              for (var option in stripeOptions) {
+                if (validOptions.indexOf(option) !== -1) {
+                  options[option] = stripeOptions[option];
+                }
+              }
 
               stripe.createToken(card, options).then(function(result) {
                 if (result.error) {
