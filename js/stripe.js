@@ -86,7 +86,7 @@
                   // Store data to prevent double submit
                   $form.attr('data-stripe-form-submit-last', formValues);
 
-                  $form.trigger('drupalStripe.submitStart', [$form]);
+                  $form.trigger('drupalStripe.submitStart');
 
                   // Collect all stripe options from the provided selectors
                   var stripeOptions = {name: ''};
@@ -136,7 +136,7 @@
                       var errorElement = document.getElementById(element.id + '-card-errors');
                       errorElement.textContent = result.error.message;
                       $form.removeAttr('data-stripe-form-submit-last');
-                      $form.trigger('drupalStripe.submitStop', [$form]);
+                      $form.trigger('drupalStripe.submitStop');
                     } else {
                       // Send the token to your server
                       element.setAttribute('value', result.token.id);
@@ -149,12 +149,12 @@
               $(form).once('stripe-single-submit').on('submit.stripeSingleSubmit', onFormSubmit);
 
               // Adding a stripe processing class using our custom events
-              $(form).on('drupalStripe.submitStart', function(e, $form) {
-                $form.addClass('stripe-processing');
+              $(form).on('drupalStripe.submitStart', function(e) {
+                $(this).addClass('stripe-processing');
               });
 
-              $(form).on('drupalStripe.submitStop', function(e, $form) {
-                $form.removeClass('stripe-processing');
+              $(form).on('drupalStripe.submitStop', function(e) {
+                $(this).removeClass('stripe-processing');
               });
             });
 
