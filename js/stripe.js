@@ -62,89 +62,92 @@
             // Add an instance of the card Element into the `card-element` <div>
             card.mount('#' + element.id + '-card-element');
 
-            // Handle real-time validation errors from the card Element.
-            card.addEventListener('change', function(event) {
-              var displayError = document.getElementById(element.id + '-card-errors');
-              if (event.error) {
-                displayError.textContent = event.error.message;
-              } else {
-                displayError.textContent = '';
-              }
-            });
-
-            // @see core/drupal.form
-            function onFormSubmit(e) {
-              var $form = $(e.currentTarget);
-              var formValues = $form.find(':input').not(element).serialize();
-              var previousValues = $form.attr('data-stripe-form-submit-last');
-              e.preventDefault();
-
-              if (previousValues !== formValues) {
-
-                // Store data to prevent double submit
-                $form.attr('data-stripe-form-submit-last', formValues);
-
-                $form.addClass('stripe-processing');
-
-                // Collect all stripe options from the provided selectors
-                var stripeOptions = {name: ''};
-                for (var data in stripeSelectors) {
-                  var selector = stripeSelectors[data];
-                  if (selector) {
-                    stripeOptions[data] = $(selector, form).val();
-                  }
+            card.on('ready', function(e) {
+              // Handle real-time validation errors from the card Element.
+              card.addEventListener('change', function(event) {
+                var displayError = document.getElementById(element.id + '-card-errors');
+                if (event.error) {
+                  displayError.textContent = event.error.message;
+                } else {
+                  displayError.textContent = '';
                 }
+              });
 
-                // Name special handling
-                if (stripeOptions['first_name'] ) {
-                  stripeOptions['name'] += stripeOptions['first_name'];
+              // Using the same approach as drupal own double submit prevention
+              // @see core/drupal.form
+              function onFormSubmit(e) {
+                var $form = $(e.currentTarget);
+                var formValues = $form.find(':input').not(element).serialize();
+                var previousValues = $form.attr('data-stripe-form-submit-last');
+                e.preventDefault();
+
+                if (previousValues !== formValues) {
+
+                  // Store data to prevent double submit
+                  $form.attr('data-stripe-form-submit-last', formValues);
+
+                  $form.addClass('stripe-processing');
+
+                  // Collect all stripe options from the provided selectors
+                  var stripeOptions = {name: ''};
+                  for (var data in stripeSelectors) {
+                    var selector = stripeSelectors[data];
+                    if (selector) {
+                      stripeOptions[data] = $(selector, form).val();
+                    }
+                  }
+
+                  // Name special handling
+                  if (stripeOptions['first_name'] ) {
+                    stripeOptions['name'] += stripeOptions['first_name'];
+                    if (stripeOptions['last_name']) {
+                      stripeOptions['name'] += ' ';
+                    }
+                  }
                   if (stripeOptions['last_name']) {
-                    stripeOptions['name'] += ' ';
+                    stripeOptions['name'] += stripeOptions['last_name'];
                   }
-                }
-                if (stripeOptions['last_name']) {
-                  stripeOptions['name'] += stripeOptions['last_name'];
-                }
 
-                // Allow other modules to change these options
-                $(element).trigger('drupalStripeCreateToken', [card, stripeOptions]);
+                  // Allow other modules to change these options
+                  $(element).trigger('drupalStripeCreateToken', [card, stripeOptions]);
 
-                // Filter out unknown options and special handling for some of them
-                // https://stripe.com/docs/stripe-js/reference#stripe-create-token
-                var validOptions = [
-                  'name',
-                  'address_line1',
-                  'address_line2',
-                  'address_city',
-                  'address_state',
-                  'address_zip',
-                  'address_country',
-                  'currency'
-                ];
-                var options = {};
-                for (var option in stripeOptions) {
-                  if (validOptions.indexOf(option) !== -1) {
-                    options[option] = stripeOptions[option];
+                  // Filter out unknown options and special handling for some of them
+                  // https://stripe.com/docs/stripe-js/reference#stripe-create-token
+                  var validOptions = [
+                    'name',
+                    'address_line1',
+                    'address_line2',
+                    'address_city',
+                    'address_state',
+                    'address_zip',
+                    'address_country',
+                    'currency'
+                  ];
+                  var options = {};
+                  for (var option in stripeOptions) {
+                    if (validOptions.indexOf(option) !== -1) {
+                      options[option] = stripeOptions[option];
+                    }
                   }
-                }
 
-                stripe.createToken(card, options).then(function(result) {
-                  if (result.error) {
-                    // Inform the user if there was an error
-                    var errorElement = document.getElementById(element.id + '-card-errors');
-                    errorElement.textContent = result.error.message;
-                    $form.removeAttr('data-stripe-form-submit-last');
-                    $form.removeClass('stripe-processing');
-                  } else {
-                    // Send the token to your server
-                    element.setAttribute('value', result.token.id);
-                    form.submit();
-                  }
-                });
+                  stripe.createToken(card, options).then(function(result) {
+                    if (result.error) {
+                      // Inform the user if there was an error
+                      var errorElement = document.getElementById(element.id + '-card-errors');
+                      errorElement.textContent = result.error.message;
+                      $form.removeAttr('data-stripe-form-submit-last');
+                      $form.removeClass('stripe-processing');
+                    } else {
+                      // Send the token to your server
+                      element.setAttribute('value', result.token.id);
+                      form.submit();
+                    }
+                  });
+                }
               }
-            }
 
-            $(form).once('stripe-single-submit').on('submit.stripeSingleSubmit', onFormSubmit);
+              $(form).once('stripe-single-submit').on('submit.stripeSingleSubmit', onFormSubmit);
+            });
 
           }(element, form));
         }
