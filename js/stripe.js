@@ -54,7 +54,7 @@
             }
 
             // Allow other modules to change these options
-            $(element).trigger('drupalStripeElementsCreate', ['card', options]);
+            $(element).trigger('drupalStripe.elementCreate', ['card', options]);
 
             // Create an instance of the card Element
             var card = elements.create('card', options);
@@ -86,7 +86,7 @@
                   // Store data to prevent double submit
                   $form.attr('data-stripe-form-submit-last', formValues);
 
-                  $form.addClass('stripe-processing');
+                  $form.trigger('drupalStripe.submitStart', [$form]);
 
                   // Collect all stripe options from the provided selectors
                   var stripeOptions = {name: ''};
@@ -109,7 +109,7 @@
                   }
 
                   // Allow other modules to change these options
-                  $(element).trigger('drupalStripeCreateToken', [card, stripeOptions]);
+                  $(element).trigger('drupalStripe.createToken', [card, stripeOptions]);
 
                   // Filter out unknown options and special handling for some of them
                   // https://stripe.com/docs/stripe-js/reference#stripe-create-token
@@ -136,7 +136,7 @@
                       var errorElement = document.getElementById(element.id + '-card-errors');
                       errorElement.textContent = result.error.message;
                       $form.removeAttr('data-stripe-form-submit-last');
-                      $form.removeClass('stripe-processing');
+                      $form.trigger('drupalStripe.submitStop', [$form]);
                     } else {
                       // Send the token to your server
                       element.setAttribute('value', result.token.id);
@@ -147,6 +147,15 @@
               }
 
               $(form).once('stripe-single-submit').on('submit.stripeSingleSubmit', onFormSubmit);
+
+              // Adding a stripe processing class using our custom events
+              $(form).on('drupalStripe.submitStart', function(e, $form) {
+                $form.addClass('stripe-processing');
+              });
+
+              $(form).on('drupalStripe.submitStop', function(e, $form) {
+                $form.removeClass('stripe-processing');
+              });
             });
 
           }(element, form));
