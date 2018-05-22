@@ -14,3 +14,4 @@ stripe.js:
   dependencies:
     - stripe/stripe
     - core/drupalSettings
+    - core/jquery
