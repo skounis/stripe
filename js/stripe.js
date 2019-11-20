@@ -59,6 +59,9 @@
             // Create an instance of the card Element
             var card = elements.create('card', options);
 
+            // Allow other modules to act on the created card element
+            $(element).trigger('drupalStripe.elementCreated', ['card', card, elements]);
+
             // Add an instance of the card Element into the `card-element` <div>
             card.mount('#' + element.id + '-card-element');
 
