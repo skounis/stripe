@@ -2,6 +2,7 @@
 
 namespace Drupal\stripe\Element;
 
+use Drupal\Core\Url;
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
@@ -56,7 +57,7 @@ class Stripe extends Hidden {
     Element::setAttributes($element, ['id']);
     $selectors = array_filter($element['#stripe_selectors']);
     if (!empty($selectors)) {
-      $element['#attributes']['data-drupal-stripe-selectors'] = JSON::encode($element['#stripe_selectors']);
+      $element['#attributes']['data-drupal-stripe-selectors'] = Json::encode($element['#stripe_selectors']);
     }
 
     return $element;
@@ -71,8 +72,8 @@ class Stripe extends Hidden {
     $apikey = $config->get('apikey.' . $config->get('environment') . '.public');
     $element['#attached']['drupalSettings']['stripe']['apiKey'] = $apikey;
     if (empty($apikey)) {
-      $settings_uri = \Drupal\Core\Url::fromRoute('stripe.settings')->toString();
-      drupal_set_message(t('You must <a href="@settings_uri">configure</a> the <b>Publishable API Key</b> on <b>%environment</b> for the stripe elements to work.', ['%environment' => $config->get('environment'), '@settings_uri' => $settings_uri]), 'error');
+      $settings_uri = Url::fromRoute('stripe.settings')->toString();
+      \Drupal::messenger()->addError(t('You must <a href="@settings_uri">configure</a> the <b>Publishable API Key</b> on <b>%environment</b> for the stripe elements to work.', ['%environment' => $config->get('environment'), '@settings_uri' => $settings_uri]));
     }
     $settings = [];
     $element['#attached']['drupalSettings']['stripe']['elements'][$element['#id']] = $settings;

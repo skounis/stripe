@@ -71,10 +71,10 @@ class SimpleCheckoutForm extends FormBase {
       $stripe_token = $form_state->getValue('stripe');
       $charge = $this->createCharge($stripe_token, 25);
       if ($charge) {
-        drupal_set_message('Charge status: ' . $charge->status);
+        $this->messenger()->addStatus('Charge status: ' . $charge->status);
         if ($charge->status == 'succeeded') {
           $link_generator = \Drupal::service('link_generator');
-          drupal_set_message($this->t('Please check payments in @link.', [
+          $this->messenger()->addStatus($this->t('Please check payments in @link.', [
             '@link' => $link_generator->generate('stripe dashboard', Url::fromUri('https://dashboard.stripe.com/test/payments')),
           ]));
         }
@@ -82,7 +82,7 @@ class SimpleCheckoutForm extends FormBase {
     }
     // Display result.
     foreach ($form_state->getValues() as $key => $value) {
-      drupal_set_message($key . ': ' . $value);
+      $this->messenger()->addStatus($key . ': ' . $value);
     }
 
   }
@@ -123,7 +123,7 @@ class SimpleCheckoutForm extends FormBase {
       return $charge;
     }
     catch (StripeBaseException $e) {
-      drupal_set_message($this->t('Stripe error: %error', ['%error' => $e->getMessage()]), 'error');
+      $this->messenger()->addError($this->t('Stripe error: %error', ['%error' => $e->getMessage()]));
     }
   }
 

@@ -1,6 +1,7 @@
 name: Stripe examples
 type: module
 description: Stripe examples
+core_version_requirement: ^8 || ^9
 core: 8.x
 package: Stripe
 dependencies:
