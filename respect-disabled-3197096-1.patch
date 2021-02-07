@@ -1,0 +1,46 @@
+diff --git a/css/stripe.css b/css/stripe.css
+index b1e7528..1fc8adc 100644
+--- a/css/stripe.css
++++ b/css/stripe.css
+@@ -1,3 +1,9 @@
++.form-type-stripe.form-disabled,
++.js-form-item-stripe.form-disabled {
++  opacity: 0.6;
++  pointer-events: none;
++}
++
+ .sripe-card-errors,
+ .StripeElement--invalid {
+   color: red;
+diff --git a/js/stripe.js b/js/stripe.js
+index f0d95d4..936fd08 100644
+--- a/js/stripe.js
++++ b/js/stripe.js
+@@ -79,6 +79,12 @@
+               // Using the same approach as drupal own double submit prevention
+               // @see core/drupal.form
+               function onFormSubmit(e) {
++                // Ignore if the field is disabled. Let the form continue with its 
++                // submission.
++                if(element.disabled) {
++                  return true;
++                }
++
+                 var $form = $(e.currentTarget);
+                 var formValues = $form.find(':input').not(element).serialize();
+                 var previousValues = $form.attr('data-stripe-form-submit-last');
+diff --git a/modules/stripe_examples/src/Form/SimpleCheckoutForm.php b/modules/stripe_examples/src/Form/SimpleCheckoutForm.php
+index 96e4efb..6b54175 100644
+--- a/modules/stripe_examples/src/Form/SimpleCheckoutForm.php
++++ b/modules/stripe_examples/src/Form/SimpleCheckoutForm.php
+@@ -66,6 +66,10 @@ class SimpleCheckoutForm extends FormBase {
+    * {@inheritdoc}
+    */
+   public function submitForm(array &$form, FormStateInterface $form_state) {
++    if (empty($stripe_token)) {
++      $this->messenger()->addWarning($this->t('Credit card details didn\'t provided.'));
++      return;
++    }
+     if ($this->checkTestStripeApiKey()) {
+       // Make test charge if we have test environment and api key.
+       $stripe_token = $form_state->getValue('stripe');
