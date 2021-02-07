@@ -1,3 +1,9 @@
+.form-type-stripe.form-disabled,
+.js-form-item-stripe.form-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
 .sripe-card-errors,
 .StripeElement--invalid {
   color: red;

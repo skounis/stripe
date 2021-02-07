@@ -79,6 +79,12 @@
               // Using the same approach as drupal own double submit prevention
               // @see core/drupal.form
               function onFormSubmit(e) {
+                // Ignore if the field is disabled. Let the form continue with its 
+                // submission.
+                if(element.disabled) {
+                  return true;
+                }
+
                 var $form = $(e.currentTarget);
                 var formValues = $form.find(':input').not(element).serialize();
                 var previousValues = $form.attr('data-stripe-form-submit-last');
