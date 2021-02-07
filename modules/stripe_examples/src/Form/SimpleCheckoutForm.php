@@ -66,6 +66,10 @@ class SimpleCheckoutForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    if (empty($stripe_token)) {
+      $this->messenger()->addWarning($this->t('Credit card details didn\'t provided.'));
+      return;
+    }
     if ($this->checkTestStripeApiKey()) {
       // Make test charge if we have test environment and api key.
       $stripe_token = $form_state->getValue('stripe');
